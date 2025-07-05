@@ -248,6 +248,9 @@ getImagesBtn.addEventListener('click', () => {
 
 // Load images automatically when the page loads
 document.addEventListener('DOMContentLoaded', () => {
+  // Display a random space fact
+  displayRandomSpaceFact();
+  
   // Use the default date range to load initial images
   const startDate = startInput.value;
   const endDate = endInput.value;
@@ -295,4 +298,78 @@ function extractYouTubeVideoId(url) {
 // Function to create a YouTube embed URL
 function createYouTubeEmbedUrl(videoId) {
   return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+}
+
+// Array of amazing space facts
+const spaceFacts = [
+  "A day on Venus is longer than its year! Venus rotates so slowly that one day (243 Earth days) is longer than one year (225 Earth days).",
+  
+  "The International Space Station travels at 17,500 miles per hour and orbits Earth every 90 minutes.",
+  
+  "One teaspoon of neutron star material would weigh about 6 billion tons on Earth - that's as much as Mount Everest!",
+  
+  "Jupiter's moon Europa has twice as much water as all of Earth's oceans combined, hidden beneath its icy surface.",
+  
+  "The largest known star, UY Scuti, is so big that if it replaced our Sun, it would extend beyond the orbit of Jupiter.",
+  
+  "A single day on Mercury experiences temperatures ranging from 800°F (427°C) during the day to -300°F (-184°C) at night.",
+  
+  "The Milky Way galaxy is on a collision course with the Andromeda galaxy, but don't worry - it won't happen for another 4.5 billion years!",
+  
+  "Saturn's moon Titan has lakes and rivers made of liquid methane and ethane instead of water.",
+  
+  "The footprints left by Apollo astronauts on the Moon will remain there for millions of years because there's no wind or water to erode them.",
+  
+  "A single bolt of lightning is five times hotter than the surface of the Sun, reaching temperatures of 30,000 Kelvin (53,540°F).",
+  
+  "The largest volcano in our solar system is Olympus Mons on Mars, which is about 13.6 miles (22 km) high - nearly three times taller than Mount Everest.",
+  
+  "If you could drive a car to the Moon at highway speeds (60 mph), it would take you about 160 days of non-stop driving.",
+  
+  "The Sun converts 4 million tons of matter into energy every second through nuclear fusion.",
+  
+  "Astronauts can grow up to 2 inches taller in space due to the lack of gravity compressing their spine.",
+  
+  "The coldest place in the known universe is the Boomerang Nebula, where temperatures drop to -458°F (-272°C).",
+  
+  "A year on Neptune lasts 165 Earth years, meaning it has only completed one orbit around the Sun since it was discovered in 1846.",
+  
+  "The Great Red Spot on Jupiter is a storm that has been raging for at least 350 years and is larger than Earth.",
+  
+  "Betelgeuse, the red supergiant star in Orion, is so large that if it were placed at the center of our solar system, it would engulf the orbits of Mercury, Venus, Earth, and Mars.",
+  
+  "The space between galaxies is not empty - it contains a thin gas with about one atom per cubic meter.",
+  
+  "A single day on the Sun lasts about 25 Earth days at the equator, but 35 Earth days at the poles because the Sun rotates faster at its equator.",
+  
+  "The Voyager 1 spacecraft, launched in 1977, is now over 14 billion miles from Earth and is the most distant human-made object in space.",
+  
+  "Uranus rotates on its side, likely due to a massive collision early in its formation, causing it to have the most extreme seasons in the solar system.",
+  
+  "The magnetic field of magnetar (a type of neutron star) is a trillion times stronger than Earth's magnetic field.",
+  
+  "It would take 9 years to walk to the Moon if you could walk in a straight line at a normal walking pace.",
+  
+  "The center of the Milky Way smells like raspberries and tastes like rum due to a chemical called ethyl formate found in space dust."
+];
+
+// Function to get a random space fact
+function getRandomSpaceFact() {
+  const randomIndex = Math.floor(Math.random() * spaceFacts.length);
+  return spaceFacts[randomIndex];
+}
+
+// Function to display a random space fact
+function displayRandomSpaceFact() {
+  const factElement = document.getElementById('randomSpaceFact');
+  if (factElement) {
+    const randomFact = getRandomSpaceFact();
+    factElement.textContent = randomFact;
+    
+    // Add a fade-in animation
+    factElement.style.opacity = '0';
+    setTimeout(() => {
+      factElement.style.opacity = '1';
+    }, 100);
+  }
 }
