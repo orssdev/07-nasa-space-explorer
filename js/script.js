@@ -20,8 +20,8 @@ setupDateInputs(startInput, endInput);
 
 // NASA's APOD API endpoint
 const NASA_API_URL = 'https://api.nasa.gov/planetary/apod';
-// NASA provides a demo key for learning purposes
-const API_KEY = 'DEMO_KEY';
+// Use the user's provided API key
+const API_KEY = 'xXPaPNmdxfaqkHP7ODJWbnwHoKb187QcQdoGsl5s';
 
 // Function to fetch space images from NASA's API
 async function fetchSpaceImages(startDate, endDate) {
