@@ -518,6 +518,126 @@ button:active {
   color: var(--nasa-red);
 }
 
+/* Video-specific styles */
+.video-container {
+  position: relative;
+}
+
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.video-overlay:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.play-button {
+  font-size: 48px;
+  color: var(--nasa-white);
+  background: var(--nasa-red);
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(252, 61, 33, 0.4);
+  transition: all 0.3s ease;
+}
+
+.play-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 24px rgba(252, 61, 33, 0.6);
+}
+
+.video-label {
+  background: var(--nasa-blue);
+  color: var(--nasa-white);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(11, 61, 145, 0.3);
+}
+
+/* Modal video styles */
+.modal-media-container {
+  width: 100%;
+  position: relative;
+}
+
+.modal-video-container {
+  width: 100%;
+  max-width: 800px;
+  aspect-ratio: 16/9;
+  background: var(--nasa-dark-gray);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(11, 61, 145, 0.1);
+}
+
+.modal-video-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.video-link-container {
+  text-align: center;
+  padding: 40px;
+  background: var(--nasa-light-gray);
+  border-radius: 12px;
+  border: 2px dashed var(--nasa-medium-gray);
+}
+
+.video-link-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+  opacity: 0.8;
+}
+
+.video-link {
+  display: inline-block;
+  background: var(--nasa-red);
+  color: var(--nasa-white);
+  padding: 12px 24px;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.video-link:hover {
+  background: var(--nasa-hover-blue);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(11, 61, 145, 0.3);
+}
+
+/* Gallery item video indicator */
+.gallery-item.video-item {
+  border-left: 4px solid var(--nasa-red);
+}
+
+.gallery-item.video-item:hover {
+  border-left-color: var(--nasa-blue);
+}
+
 /* Add subtle NASA branding to scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

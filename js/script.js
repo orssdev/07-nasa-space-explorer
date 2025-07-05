@@ -5,6 +5,8 @@ const getImagesBtn = document.getElementById('getImagesBtn');
 const gallery = document.getElementById('gallery');
 const modal = document.getElementById('modal');
 const modalImage = document.getElementById('modalImage');
+const modalVideoContainer = document.getElementById('modalVideoContainer');
+const modalVideo = document.getElementById('modalVideo');
 const modalTitle = document.getElementById('modalTitle');
 const modalDate = document.getElementById('modalDate');
 const modalExplanation = document.getElementById('modalExplanation');
@@ -81,16 +83,16 @@ function displayGallery(images) {
     gallery.innerHTML = `
       <div class="placeholder">
         <div class="placeholder-icon">🔭</div>
-        <p>No images found for the selected date range.</p>
+        <p>No content found for the selected date range.</p>
       </div>
     `;
     return;
   }
   
-  // Create a gallery item for each image
+  // Create a gallery item for each image and video
   images.forEach(item => {
-    // Only show items that have images (not videos)
-    if (item.media_type === 'image') {
+    // Show both images and videos
+    if (item.media_type === 'image' || item.media_type === 'video') {
       const galleryItem = createGalleryItem(item);
       gallery.appendChild(galleryItem);
     }
@@ -103,6 +105,11 @@ function createGalleryItem(item) {
   const galleryItem = document.createElement('div');
   galleryItem.className = 'gallery-item';
   
+  // Add special class for video items
+  if (item.media_type === 'video') {
+    galleryItem.classList.add('video-item');
+  }
+  
   // Format the date to be more readable
   const date = new Date(item.date);
   const formattedDate = date.toLocaleDateString('en-US', {
@@ -111,17 +118,38 @@ function createGalleryItem(item) {
     day: 'numeric'
   });
   
-  // Create the HTML content for this gallery item
-  galleryItem.innerHTML = `
-    <div class="image-container">
-      <img src="${item.url}" alt="${item.title}" loading="lazy" />
-    </div>
-    <div class="image-info">
-      <h3 class="image-title">${item.title}</h3>
-      <p class="image-date">${formattedDate}</p>
-      <p class="image-description">${item.explanation}</p>
-    </div>
-  `;
+  // Create the HTML content for this gallery item based on media type
+  if (item.media_type === 'image') {
+    galleryItem.innerHTML = `
+      <div class="image-container">
+        <img src="${item.url}" alt="${item.title}" loading="lazy" />
+      </div>
+      <div class="image-info">
+        <h3 class="image-title">${item.title}</h3>
+        <p class="image-date">${formattedDate}</p>
+        <p class="image-description">${item.explanation}</p>
+      </div>
+    `;
+  } else if (item.media_type === 'video') {
+    // Extract video ID from YouTube URL for thumbnail
+    const videoId = extractYouTubeVideoId(item.url);
+    const thumbnailUrl = videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : 'https://via.placeholder.com/400x300?text=Video';
+    
+    galleryItem.innerHTML = `
+      <div class="image-container video-container">
+        <img src="${thumbnailUrl}" alt="${item.title}" loading="lazy" />
+        <div class="video-overlay">
+          <div class="play-button">▶</div>
+          <span class="video-label">VIDEO</span>
+        </div>
+      </div>
+      <div class="image-info">
+        <h3 class="image-title">${item.title}</h3>
+        <p class="image-date">${formattedDate}</p>
+        <p class="image-description">${item.explanation}</p>
+      </div>
+    `;
+  }
   
   // Add click event listener to open modal
   galleryItem.addEventListener('click', () => {
@@ -131,7 +159,7 @@ function createGalleryItem(item) {
   return galleryItem;
 }
 
-// Function to open the modal with image details
+// Function to open the modal with image or video details
 function openModal(item) {
   // Format the date for the modal
   const date = new Date(item.date);
@@ -141,9 +169,37 @@ function openModal(item) {
     day: 'numeric'
   });
   
-  // Set the modal content
-  modalImage.src = item.url;
-  modalImage.alt = item.title;
+  // Set the modal content based on media type
+  if (item.media_type === 'image') {
+    // Show image, hide video
+    modalImage.src = item.url;
+    modalImage.alt = item.title;
+    modalImage.style.display = 'block';
+    modalVideoContainer.style.display = 'none';
+  } else if (item.media_type === 'video') {
+    // Show video, hide image
+    const videoId = extractYouTubeVideoId(item.url);
+    if (videoId) {
+      modalVideo.src = createYouTubeEmbedUrl(videoId);
+      modalVideoContainer.style.display = 'block';
+      modalImage.style.display = 'none';
+    } else {
+      // If we can't extract video ID, show a link instead
+      modalImage.style.display = 'none';
+      modalVideoContainer.innerHTML = `
+        <div class="video-link-container">
+          <div class="video-link-icon">🎬</div>
+          <p>Watch this video on YouTube:</p>
+          <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="video-link">
+            ${item.title}
+          </a>
+        </div>
+      `;
+      modalVideoContainer.style.display = 'block';
+    }
+  }
+  
+  // Set common modal content
   modalTitle.textContent = item.title;
   modalDate.textContent = formattedDate;
   modalExplanation.textContent = item.explanation;
@@ -158,6 +214,11 @@ function openModal(item) {
 // Function to close the modal
 function closeModal() {
   modal.style.display = 'none';
+  
+  // Stop video playback by clearing the src
+  if (modalVideo.src) {
+    modalVideo.src = '';
+  }
   
   // Restore background scrolling
   document.body.style.overflow = 'auto';
@@ -212,3 +273,26 @@ document.addEventListener('keydown', (event) => {
     closeModal();
   }
 });
+
+// Function to extract YouTube video ID from URL
+function extractYouTubeVideoId(url) {
+  // Handle different YouTube URL formats
+  const patterns = [
+    /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
+    /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/
+  ];
+  
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match && match[1]) {
+      return match[1];
+    }
+  }
+  
+  return null;
+}
+
+// Function to create a YouTube embed URL
+function createYouTubeEmbedUrl(videoId) {
+  return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+}
